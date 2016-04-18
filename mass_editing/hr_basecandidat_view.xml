@@ -2,11 +2,6 @@
 <openerp>
     <data>
 
-    <menuitem name="Recruitment"
-        id="menu_hr_recruitment_recruitment"
-        parent="hr.menu_hr_configuration"
-        sequence="40"/>
-
     <act_window
         id="act_hr_applicant_to_meeting"
         name="Meetings"
@@ -137,7 +132,6 @@
         <field name="name">Base Candidat</field>
         <field name="res_model">hr.base_candidat</field>
         <field name="view_mode">tree,form,calendar</field>
-        <field name="context">{'search_default_job_id': [active_id], 'default_job_id': active_id}</field>
         <field name="help" type="html">
               <p>
                 Odoo helps you track candidates and follow up all operations: meetings, interviews, etc.
@@ -148,6 +142,13 @@
               </p>
         </field>
     </record>
+    
+
+        <menuitem id="menu_base_candidat" name="Base Candidat" parent="base.menu_crm_case_job_req_main" sequence="3"/>
+     
+
+    </data>
+</openerp>
 
 
 
