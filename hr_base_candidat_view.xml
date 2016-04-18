@@ -1,0 +1,159 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+    <menuitem name="Recruitment"
+        id="menu_hr_recruitment_recruitment"
+        parent="hr.menu_hr_configuration"
+        sequence="40"/>
+
+    <act_window
+        id="act_hr_applicant_to_meeting"
+        name="Meetings"
+        res_model="calendar.event"
+        src_model="hr.applicant"
+        view_mode="calendar,tree,form,graph"
+        view_type="form"/>
+
+    <!-- Base Candidat -->
+    <record model="ir.ui.view" id="base_candidat_tree_view">
+        <field name="name">Base Candidat</field>
+        <field name="model">hr.base_candidat</field>
+        <field name="arch" type="xml">
+            <tree string="Candidat" fonts="bold:message_unread==True">
+                <field name="message_unread" invisible="1"/>
+                <field name="create_date"/>
+                <field name="candidat_name"/>
+                <field name="email"/>
+                <field name="mobile"/>
+                <field name="title_action" invisible="context.get('invisible_next_action', True)"/>
+                <field name="date_action" invisible="context.get('invisible_next_date', True)"/>
+                <field name="source_id" invisible="1"/>
+                <field name="survey" invisible="1"/>
+                <field name="response_id" invisible="1"/>
+                <field name="priority"/>
+                <field name="type_id" invisible="1"/>
+                <field name="user_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="base_candidat_form_view">
+        <field name="name">Base Candidat Form</field>
+        <field name="model">hr.base_candidat</field>
+        <field name="arch" type="xml">
+          <form string="Base Candidat Form">
+            <sheet> 
+                <button name="action_get_attachment_tree_view"
+                        class="oe_stat_button"
+                        icon="fa-book"
+                        type="object">
+                        <field name="attachment_number" widget="statinfo" string="Documents"/>
+                </button>
+                
+                <div class="oe_title">
+                    <label for="candidat_name" class="oe_edit_only"/>
+                    <h1><field name="candidat_name"/></h1>
+                </div>
+		        <group>
+                    <group>
+                        <field name="email" widget="email"/>
+                        <field name="mobile"/>
+                        <field name="type_id" placeholder="Degree"/>
+                    </group>
+                    <group>
+                        <field name="user_id"
+                            context="{'default_groups_ref': ['base.group_user', 'base.group_partner_manager', 'base.group_hr_manager']}"/>
+                        <label for="title_action"/>
+                        <div>
+                            <field name="date_action"/>
+                            <field name="title_action" class="oe_inline" placeholder="e.g. Call for interview"/>
+                        </div>
+                        <field name="priority" widget="priority"/>
+                        <field name="source_id"/>
+                        <field name="reference"/>
+			        <group>
+                        <field name="categ_ids" widget="many2many_tags"/>
+                    </group>
+                <separator string="Application Summary"/>
+                <field name="description" placeholder="Feedback of interviews..."/>
+            </sheet>
+            <div class="oe_chatter">
+                <field name="message_follower_ids" widget="mail_followers"/>
+                <field name="message_ids" widget="mail_thread"/>
+            </div>
+          </form>
+        </field>
+    </record>
+	
+	 <record id="view_base_candidat_filter" model="ir.ui.view">
+        <field name="name">Base Candidat Search</field>
+        <field name="model">hr.base_candidat</field>
+        <field name="arch" type="xml">
+            <search string="Search Candidat">
+                <field name="partner_name" filter_domain="['|','|',('name','ilike',self),('partner_name','ilike',self),('email_from','ilike',self)]" string="Subject / $
+                <filter string="My" domain="[('user_id', '=', uid)]"/>
+                <filter string="Unassigned" domain="[('user_id', '=', False)]"/>
+                <separator/>
+                <filter string="Next Actions" context="{'invisible_next_action':False, 'invisible_next_date':False}"
+                    domain="[('date_action','&lt;&gt;',False)]" help="Filter and view on next actions and date"/>
+                <separator/>
+                <filter string="New Mail" name="message_unread" domain="[('message_unread','=',True)]"/>
+                <field name="job_id"/>
+                <field name="department_id"/>
+                <field name="user_id"/>
+                <field name="stage_id" domain="[]"/>
+                <separator/>
+                <field name="categ_ids"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Responsible" domain="[]"  context="{'group_by':'user_id'}"/>
+                    <filter string="Job" domain="[]" context="{'group_by':'job_id'}"/>
+                    <filter string="Degree" domain="[]" context="{'group_by':'type_id'}"/>
+                    <filter string="Stage" domain="[]" context="{'group_by':'stage_id'}"/>
+                    <filter string="Creation Date" context="{'group_by':'create_date'}"/>
+					<filter string="Last Stage Update" context="{'group_by':'date_last_stage_update'}"/>
+                </group>
+           </search>
+        </field>
+    </record>
+	
+	 <!-- CRM Lead Calendar View -->
+    <record model="ir.ui.view" id="hr_base_candidat_calendar_view">
+        <field name="name">Hr Candidat Calendar</field>
+        <field name="model">hr.base_candidat</field>
+        <field name="priority" eval="2"/>
+        <field name="arch" type="xml">
+            <calendar string="Candidat"
+                date_start="date_action" color="user_id">
+                <field name="name"/>
+                <field name="partner_name"/>
+                <field name="title_action"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_hr_base_candidat">
+        <field name="name">Base Candidat</field>
+        <field name="res_model">hr.base_candidat</field>
+        <field name="view_mode">tree,form,calendar</field>
+        <field name="context">{'search_default_job_id': [active_id], 'default_job_id': active_id}</field>
+        <field name="help" type="html">
+              <p>
+                Odoo helps you track candidates and follow up all operations: meetings, interviews, etc.
+              </p><p>
+                Applicants and their attached CV are created automatically when an email is sent.
+                If you install the document management modules, all resumes are indexed automatically,
+                so that you can easily search through their content.
+              </p>
+        </field>
+    </record>
+
+	  <menuitem id="menu_base_candidat" name="Base Candidat" parent="base.menu_crm_case_job_req_main" sequence="3"/>
+     
+    </data>
+</openerp>
+
+
+
+
