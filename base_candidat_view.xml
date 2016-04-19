@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+    <!-- Base Candidat -->
+    <record model="ir.ui.view" id="base_candidat_tree_view">
+        <field name="name">Base Candidat</field>
+        <field name="model">base.candidat</field>
+        <field name="arch" type="xml">
+            <tree string="Candidat" fonts="bold:message_unread==True">
+                <field name="create_date"/>
+                <field name="candidat_name"/>
+                <field name="email"/>
+                <field name="mobile"/>
+                <field name="title_action" invisible="context.get('invisible_next_action', True)"/>
+                <field name="date_action" invisible="context.get('invisible_next_date', True)"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="base_candidat_form_view">
+        <field name="name">Base Candidat Form</field>
+        <field name="model">base.candidat</field>
+        <field name="arch" type="xml">
+          <form string="Base Candidat Form">
+            <sheet>
+                <div class="oe_title">
+                    <label for="candidat_name" class="oe_edit_only"/>
+                    <h1><field name="candidat_name"/></h1>
+                </div>
+                <group>
+                    <group>
+                        <field name="email" widget="email"/>
+                        <field name="mobile"/>
+                    </group>
+                    <group>
+                        <label for="title_action"/>
+                        <div>
+                            <field name="date_action"/>
+                            <field name="title_action" class="oe_inline" placeholder="e.g. Call for interview"/>
+                        </div>
+                    </group>
+                <separator string="Application Summary"/>
+                <field name="description" placeholder="Feedback of interviews..."/>
+                </group>
+            </sheet>
+          </form>
+        </field>
+    </record>
+
+
+    <record model="ir.actions.act_window" id="action_hr_base_candidat">
+        <field name="name">Base Candidat</field>
+        <field name="res_model">base.candidat</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+              <p>
+                Odoo helps you track candidates and follow up all operations: meetings, interviews, etc.
+              </p><p>
+                Applicants and their attached CV are created automatically when an email is sent.
+                If you install the document management modules, all resumes are indexed automatically,
+                so that you can easily search through their content.
+              </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_base_candidat" name="Base Candidat" parent="base.menu_crm_case_job_req_main" sequence="3"/>
+
+    </data>
+</openerp>
+
